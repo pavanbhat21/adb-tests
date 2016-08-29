@@ -11,7 +11,7 @@ def vsm_plugin_install():
     cmd = "vagrant plugin install ./vagrant-registration-*.gem ./vagrant-sshfs-*.gem ./vagrant-service-manager-*.gem"
     out = process.run(cmd, shell=True)
     return out
-
+# Better to fetch all plugins and install rather than hard coding
 
 def vsm_env_info(vagrant_BOX_PATH, service, readable):
     ''' method to get the env variable details for 
@@ -33,6 +33,8 @@ def vsm_box_info(vagrant_BOX_PATH, option, readable):
     except:
 	print "Could NOT get the info of the Vagrant box. Maybe something went wrong..."
 
+## use chdir in setup rather than in individual methods
+
 def vsm_service_handling(vagrant_BOX_PATH, operation, service):
     ''' method to start/stop/restart and get status of 
         services and returns the output of the cmd '''
@@ -40,6 +42,7 @@ def vsm_service_handling(vagrant_BOX_PATH, operation, service):
     cmd = "vagrant service-manager %s %s" %(operation, service)
     out = process.run(cmd, shell=True)
     return out
+### The above and below methods look similar could remove one of these
 
 def vsm_binaries_handling(vagrant_BOX_PATH, operation, service):
     ''' method to start/stop/restart and get status of 
@@ -67,6 +70,7 @@ def instll_cli(vagrant_BOX_PATH, service,version,command):
     env_vars = subprocess.Popen('eval "$(VAGRANT_NO_COLOR=1 vagrant service-manager env '+service+' | tr -d \'\r\')";eval "$(vagrant service-manager install-cli '+service+' '+version+' | tr -d \'\r\')";'+command+'',  stdout=subprocess.PIPE, shell=True)
     (output1, err1) = env_vars.communicate()
     return output1,err1
+# the above method should just install the binary and not set the paths.. It could be a separate test
 
 def box_ip(vagrant_BOX_PATH, ip):
     os.chdir(vagrant_BOX_PATH)
